@@ -104,10 +104,13 @@ class _CategoriesState extends State<CategoriesScreen> {
                       return InkWell(
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>detaildscreen(
-                            imgsource: snapshot.data!.articles![index].urlToImage.toString(),
+                            imgsource: snapshot.data!.articles![index].urlToImage!.toString(),
                             title: snapshot.data!.articles![index].title.toString(),
                             source: snapshot.data!.articles![index].source!.name.toString(),
                             datetime: snapshot.data!.articles![index].publishedAt.toString(),
+                            discription: snapshot.data!.articles![index].description!,
+                            content: snapshot.data!.articles![index].content!,
+                            // author: snapshot.data!.articles![index].author!,
                           )));
                         },
                         child: Row(
@@ -138,7 +141,7 @@ class _CategoriesState extends State<CategoriesScreen> {
                             ),
                             SizedBox(width: width * .03),
                             SizedBox(
-                              width: width * .7,
+                              width: width * .6,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -154,22 +157,17 @@ class _CategoriesState extends State<CategoriesScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                        // textAlign: TextAlign.justify,
-                                        snapshot
-                                            .data!
-                                            .articles![index]
-                                            .source!
-                                            .name
-                                            .toString(),
+                                        snapshot.data!.articles![index].source!.name.toString().length > 5
+                                            ? '${snapshot.data!.articles![index].source!.name!.substring(0, 5)}...'
+                                            : snapshot.data!.articles![index].source!.name!,
                                         overflow: TextOverflow.ellipsis,
-
+                                        maxLines: 1,
                                         style: TextStyle(
-                                          fontSize: 15,
+                                          fontSize: 12,
                                           fontFamily: "regular",
                                         ),
                                       ),
-
-                                      SizedBox(width: width * .21),
+                                      SizedBox(width: width * .2),
                                       Text(formate.format(now)),
                                     ],
                                   ),
