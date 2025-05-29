@@ -88,6 +88,9 @@ flutter:
         - asset: assets/fonts/Poppins-ExtraBold.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+    - family: "regular"
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

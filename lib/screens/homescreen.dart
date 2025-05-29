@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:news_application/models/categorymodel.dart';
 import 'package:news_application/models/news_headlines.dart';
 import 'package:news_application/screens/categoriesScreen.dart';
 import 'package:news_application/services/api_services.dart';
@@ -75,7 +76,7 @@ class _HomescreenState extends State<Homescreen> {
         ],
       ),
       body: ListView(
-        // scrollDirection: Axis.vertical,
+        scrollDirection: Axis.vertical,
         children: [
           SizedBox(
             height: height * 0.5,
@@ -200,6 +201,89 @@ class _HomescreenState extends State<Homescreen> {
                 }
               },
             ),
+          ),
+          FutureBuilder<CategoryModel>(
+            future: ApiServices.fetch_api_category("General"),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: SpinKitCircle(color: Colors.blue));
+              } else {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data!.articles!.length,
+                  itemBuilder: (context, index) {
+                    DateTime now = DateTime.parse(
+                      snapshot.data!.articles![index].publishedAt.toString(),
+                    );
+                    final formate = DateFormat("dd.MM.yy");
+                    return Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              height: height * .15,
+                              width: width * .22,
+                              imageUrl:
+                                  snapshot.data!.articles![index].urlToImage
+                                      .toString(),
+                              fit: BoxFit.cover,
+                              placeholder:
+                                  (context, url) => SizedBox(
+                                    child: SpinKitCircle(color: Colors.blue),
+                                  ),
+                              errorWidget:
+                                  (context, url, error) =>
+                                      Icon(Icons.error, color: Colors.red),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: width * .03),
+                        SizedBox(
+                          width: width * .7,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                // textAlign: TextAlign.justify,
+                                snapshot.data!.articles![index].title!,
+                                style: TextStyle(
+                                  fontFamily: "bold",
+                                  fontSize: 15,
+                                ),
+                              ),
+                              SizedBox(height: height * .05),
+                              Row(
+                                children: [
+                                  Text(
+                                    // textAlign: TextAlign.justify,
+                                    snapshot.data!.articles![index].source!.name
+                                        .toString(),
+                                    overflow: TextOverflow.ellipsis,
+
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontFamily: "regular",
+                                    ),
+                                  ),
+
+                                  SizedBox(width: width * .21),
+                                  Text(formate.format(now)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
           ),
         ],
       ),
