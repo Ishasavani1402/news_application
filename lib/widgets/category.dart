@@ -25,43 +25,33 @@ class _CategoryState extends State<Category> {
         height: 50,
         width: MediaQuery.of(context).size.width,
         child: ListView.builder(
-          itemCount: 20,
+          itemCount: categories.length,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Stack(
-                children: [
-                  // ClipRRect(
-                  //   borderRadius: BorderRadius.circular(10),
-                  //   child: Image.network(
-                  //     "",
-                  //     height: 50,
-                  //     width: 100,
-                  //     fit: BoxFit.cover,
-                  //   ),
-                  // ),
-                  Container(
-                    height: 50,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.black12,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    // vertical: 10,
                   ),
-                  Positioned(
-                    top: 5,
-                    left: 30,
+                  child: Center(
                     child: Text(
-                      "Flower",
+                      categories[index].toString(),
                       style: TextStyle(
-                        fontSize: 15,
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                        fontFamily: "bold",
+                        fontSize: 13,
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
             );
           },

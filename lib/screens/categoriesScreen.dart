@@ -1,26 +1,150 @@
-// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, file_names
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:news_application/models/categorymodel.dart';
 import 'package:news_application/services/api_services.dart';
-import 'package:news_application/widgets/category.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
   _CategoriesState createState() => _CategoriesState();
 }
 
-String categoryname = "general";
-Future<CategoryModel> fetchdata() async {
-  final response = await ApiServices.fetch_api_category(categoryname);
-  return response;
-}
+List<String> categories = [
+  "General",
+  "Technology",
+  "Sports",
+  "Entertainment",
+  "Business",
+  "Health",
+];
 
 class _CategoriesState extends State<CategoriesScreen> {
+  String categoryname = "General";
+  Future<CategoryModel> fetchdata() async {
+    final response = await ApiServices.fetch_api_category(categoryname);
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child:
-     Scaffold(
-      body: Category()));
+    var height = MediaQuery.sizeOf(context).height * 1;
+    var width = MediaQuery.sizeOf(context).width * 1;
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              height: 50,
+              width: MediaQuery.of(context).size.width,
+              child: ListView.builder(
+                itemCount: categories.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          categoryname = categories[index];
+                        });
+                      },
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color:
+                              categoryname == categories[index]
+                                  ? Colors.grey
+                                  : Colors.black,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            // vertical: 10,
+                          ),
+                          child: Center(
+                            child: Text(
+                              categories[index].toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "bold",
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<CategoryModel>(
+              future: ApiServices.fetch_api_category(categoryname),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: SpinKitCircle(color: Colors.blue));
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.articles!.length,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        children: [
+                          CachedNetworkImage(
+                            height: height * .15,
+                            width: width * .19,
+                            imageUrl:
+                                snapshot.data!.articles![index].urlToImage
+                                    .toString(),
+                            fit: BoxFit.cover,
+                            placeholder:
+                                (context, url) => SizedBox(
+                                  child: SpinKitCircle(color: Colors.blue),
+                                ),
+                            errorWidget:
+                                (context, url, error) =>
+                                    Icon(Icons.error, color: Colors.red),
+                          ),
+                          SizedBox(width: width * .05),
+                          SizedBox(
+                            width: width * .7,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  // textAlign: TextAlign.justify,
+                                  snapshot.data!.articles![index].title!,
+                                  style: TextStyle(
+                                    fontFamily: "bold",
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                SizedBox(height: height * .05),
+                                Text(
+                                  // textAlign: TextAlign.justify,
+                                  snapshot.data!.articles![index].author
+                                      .toString(),
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
