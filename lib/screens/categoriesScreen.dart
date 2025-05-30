@@ -35,7 +35,11 @@ class _CategoriesState extends State<CategoriesScreen> {
     var height = MediaQuery.sizeOf(context).height * 1;
     var width = MediaQuery.sizeOf(context).width * 1;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Categories",style: TextStyle(fontFamily: "black",fontSize: 20),
+        ),
+        centerTitle: true,
+      ),
       body: Column(
         children: [
           Padding(
@@ -102,16 +106,47 @@ class _CategoriesState extends State<CategoriesScreen> {
                       );
                       final formate = DateFormat("dd.MM.yy");
                       return InkWell(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>detaildscreen(
-                            imgsource: snapshot.data!.articles![index].urlToImage!.toString(),
-                            title: snapshot.data!.articles![index].title.toString(),
-                            source: snapshot.data!.articles![index].source!.name.toString(),
-                            datetime: snapshot.data!.articles![index].publishedAt.toString(),
-                            discription: snapshot.data!.articles![index].description!,
-                            content: snapshot.data!.articles![index].content!,
-                            // author: snapshot.data!.articles![index].author!,
-                          )));
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => detaildscreen(
+                                    imgsource:
+                                        snapshot
+                                            .data!
+                                            .articles![index]
+                                            .urlToImage!
+                                            .toString(),
+                                    title:
+                                        snapshot.data!.articles![index].title
+                                            .toString(),
+                                    source:
+                                        snapshot
+                                            .data!
+                                            .articles![index]
+                                            .source!
+                                            .name
+                                            .toString(),
+                                    datetime:
+                                    formate.format( DateTime.parse(
+                                      snapshot.data!.articles![index].publishedAt.toString(),
+                                    )),
+                                    discription:
+                                        snapshot
+                                            .data!
+                                            .articles![index]
+                                            .description!,
+                                    content:
+                                        snapshot
+                                            .data!
+                                            .articles![index]
+                                            .content!,
+                                    author:
+                                        snapshot.data!.articles![index].author ?? "unknown",
+                                  ),
+                            ),
+                          );
                         },
                         child: Row(
                           children: [
@@ -131,7 +166,9 @@ class _CategoriesState extends State<CategoriesScreen> {
                                   fit: BoxFit.cover,
                                   placeholder:
                                       (context, url) => SizedBox(
-                                        child: SpinKitCircle(color: Colors.blue),
+                                        child: SpinKitCircle(
+                                          color: Colors.blue,
+                                        ),
                                       ),
                                   errorWidget:
                                       (context, url, error) =>
@@ -157,9 +194,20 @@ class _CategoriesState extends State<CategoriesScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                        snapshot.data!.articles![index].source!.name.toString().length > 5
+                                        snapshot
+                                                    .data!
+                                                    .articles![index]
+                                                    .source!
+                                                    .name
+                                                    .toString()
+                                                    .length >
+                                                5
                                             ? '${snapshot.data!.articles![index].source!.name!.substring(0, 5)}...'
-                                            : snapshot.data!.articles![index].source!.name!,
+                                            : snapshot
+                                                .data!
+                                                .articles![index]
+                                                .source!
+                                                .name!,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: TextStyle(

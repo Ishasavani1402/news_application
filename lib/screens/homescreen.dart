@@ -3,9 +3,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:news_application/models/Bitcoinmodel.dart';
 import 'package:news_application/models/categorymodel.dart';
 import 'package:news_application/models/news_headlines.dart';
+import 'package:news_application/screens/Bitcoindetail.dart';
 import 'package:news_application/screens/categoriesScreen.dart';
+import 'package:news_application/screens/detaildtopheadlines.dart';
 import 'package:news_application/services/api_services.dart';
 
 class Homescreen extends StatefulWidget {
@@ -13,15 +16,17 @@ class Homescreen extends StatefulWidget {
   _HomescreenState createState() => _HomescreenState();
 }
 
-enum FilterList { bbcnews, arynews, independent, cnn }
-
-FilterList? selectedvalue;
 
 class _HomescreenState extends State<Homescreen> {
   // List<News_BBC> artical = [];
 
   Future<News_BBC> fetchdata() async {
     final response = await ApiServices.fetch_api(name);
+    return response;
+  }
+
+  Future<Bitcoin> fetchbitcoindata()async{
+    final response = await ApiServices.fetch_api_bitcoim();
     return response;
   }
 
@@ -47,36 +52,9 @@ class _HomescreenState extends State<Homescreen> {
           },
           child: Icon(Icons.category),
         ),
-        actions: [
-          PopupMenuButton<FilterList>(
-            onSelected: (FilterList iteam) {
-              setState(() {
-                selectedvalue = iteam;
-                if (FilterList.bbcnews.name == iteam.name) {
-                  name = "bbc-news";
-                }
-                if (FilterList.arynews.name == iteam.name) {
-                  name = "ary-news";
-                }
-              });
-            },
-            initialValue: selectedvalue,
-            itemBuilder:
-                (context) => <PopupMenuEntry<FilterList>>[
-                  PopupMenuItem<FilterList>(
-                    value: FilterList.bbcnews,
-                    child: Text("BBc-news"),
-                  ),
-                  PopupMenuItem<FilterList>(
-                    value: FilterList.arynews,
-                    child: Text("ary-news"),
-                  ),
-                ],
-          ),
-        ],
       ),
       body: ListView(
-        scrollDirection: Axis.vertical,
+        // scrollDirection: Axis.vertical,
         children: [
           SizedBox(
             height: height * 0.5,
@@ -95,105 +73,119 @@ class _HomescreenState extends State<Homescreen> {
                         snapshot.data!.articles![index].publishedAt.toString(),
                       );
                       final formate = DateFormat("dd.MM.yy");
-                      return SizedBox(
-                        child: Stack(
-                          children: [
-                            SizedBox(
-                              height: height * 0.5,
-                              width: width * .9,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        snapshot
-                                            .data!
-                                            .articles![index]
-                                            .urlToImage
-                                            .toString(),
-                                    fit: BoxFit.cover,
-                                    placeholder:
-                                        (context, url) => SizedBox(
-                                          child: SpinKitCircle(
-                                            color: Colors.blue,
-                                          ),
-                                        ),
-                                    errorWidget:
-                                        (context, url, error) => Icon(
-                                          Icons.error,
-                                          color: Colors.red,
-                                        ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 20,
-                              left: 20,
-                              right: 20,
-                              child: Card(
-                                elevation: 1,
-                                surfaceTintColor: Colors.black45,
-                                shadowColor: Colors.black,
-                                color: Colors.white,
-                                child: SizedBox(
-                                  // alignment: Alignment.bottomCenter,
-                                  height: height * .32,
-                                  // width: width * .55,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(14),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      // crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: width * .7,
-                                          child: Text(
-                                            snapshot
-                                                .data!
-                                                .articles![index]
-                                                .description!,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontFamily: "bold",
+                      return InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> detaildtopheadlines(image:
+                              snapshot.data!.articles![index].urlToImage.toString(),
+                              discription: snapshot.data!.articles![index].description!,
+                              source: snapshot.data!.articles![index].source!.name!,
+                              author: snapshot.data!.articles![index].author ?? "unknown",
+                              title: snapshot.data!.articles![index].title!,
+                              published: formate.format( DateTime.parse(
+                                snapshot.data!.articles![index].publishedAt.toString(),
+                              )),
+                              content: snapshot.data!.articles![index].content!,)));
+                        },
+                        child: SizedBox(
+                          child: Stack(
+                            children: [
+                              SizedBox(
+                                height: height * 0.5,
+                                width: width * .9,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          snapshot
+                                              .data!
+                                              .articles![index]
+                                              .urlToImage
+                                              .toString(),
+                                      fit: BoxFit.cover,
+                                      placeholder:
+                                          (context, url) => SizedBox(
+                                            child: SpinKitCircle(
+                                              color: Colors.blue,
                                             ),
                                           ),
-                                        ),
-                                        Spacer(),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              snapshot
-                                                  .data!
-                                                  .articles![index]
-                                                  .source!
-                                                  .name
-                                                  .toString(),
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                fontFamily: "bold",
-                                              ),
-                                            ),
-                                            Text(
-                                              formate.format(now),
-                                              style: TextStyle(
-                                                fontFamily: "bold",
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                      errorWidget:
+                                          (context, url, error) => Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                          ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                              Positioned(
+                                bottom: 20,
+                                left: 20,
+                                right: 20,
+                                child: Card(
+                                  elevation: 1,
+                                  surfaceTintColor: Colors.black45,
+                                  shadowColor: Colors.black,
+                                  color: Colors.white,
+                                  child: SizedBox(
+                                    // alignment: Alignment.bottomCenter,
+                                    height: height * .32,
+                                    // width: width * .55,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(14),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        // crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: width * .7,
+                                            child: Text(
+                                              snapshot
+                                                  .data!
+                                                  .articles![index]
+                                                  .description!,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: "bold",
+                                              ),
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                snapshot
+                                                    .data!
+                                                    .articles![index]
+                                                    .source!
+                                                    .name
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontFamily: "bold",
+                                                ),
+                                              ),
+                                              Text(
+                                                formate.format(now),
+                                                style: TextStyle(
+                                                  fontFamily: "bold",
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -202,89 +194,59 @@ class _HomescreenState extends State<Homescreen> {
               },
             ),
           ),
-          // FutureBuilder<CategoryModel>(
-          //   future: ApiServices.fetch_api_category("General"),
-          //   builder: (context, snapshot) {
-          //     if (snapshot.connectionState == ConnectionState.waiting) {
-          //       return Center(child: SpinKitCircle(color: Colors.blue));
-          //     } else {
-          //       return ListView.builder(
-          //         shrinkWrap: true,
-          //         itemCount: snapshot.data!.articles!.length,
-          //         itemBuilder: (context, index) {
-          //           DateTime now = DateTime.parse(
-          //             snapshot.data!.articles![index].publishedAt.toString(),
-          //           );
-          //           final formate = DateFormat("dd.MM.yy");
-          //           return Row(
-          //             children: [
-          //               Padding(
-          //                 padding: const EdgeInsets.symmetric(
-          //                   horizontal: 10,
-          //                   vertical: 10,
-          //                 ),
-          //                 child: ClipRRect(
-          //                   borderRadius: BorderRadius.circular(10),
-          //                   child: CachedNetworkImage(
-          //                     height: height * .15,
-          //                     width: width * .22,
-          //                     imageUrl:
-          //                         snapshot.data!.articles![index].urlToImage
-          //                             .toString(),
-          //                     fit: BoxFit.cover,
-          //                     placeholder:
-          //                         (context, url) => SizedBox(
-          //                           child: SpinKitCircle(color: Colors.blue),
-          //                         ),
-          //                     errorWidget:
-          //                         (context, url, error) =>
-          //                             Icon(Icons.error, color: Colors.red),
-          //                   ),
-          //                 ),
-          //               ),
-          //               SizedBox(width: width * .03),
-          //               SizedBox(
-          //                 width: width * .7,
-          //                 child: Column(
-          //                   crossAxisAlignment: CrossAxisAlignment.start,
-          //                   children: [
-          //                     Text(
-          //                       // textAlign: TextAlign.justify,
-          //                       snapshot.data!.articles![index].title!,
-          //                       style: TextStyle(
-          //                         fontFamily: "bold",
-          //                         fontSize: 15,
-          //                       ),
-          //                     ),
-          //                     SizedBox(height: height * .05),
-          //                     Row(
-          //                       children: [
-          //                         Text(
-          //                           // textAlign: TextAlign.justify,
-          //                           snapshot.data!.articles![index].source!.name
-          //                               .toString(),
-          //                           overflow: TextOverflow.ellipsis,
-          //
-          //                           style: TextStyle(
-          //                             fontSize: 15,
-          //                             fontFamily: "regular",
-          //                           ),
-          //                         ),
-          //
-          //                         SizedBox(width: width * .21),
-          //                         Text(formate.format(now)),
-          //                       ],
-          //                     ),
-          //                   ],
-          //                 ),
-          //               ),
-          //             ],
-          //           );
-          //         },
-          //       );
-          //     }
-          //   },
-          // ),
+          SizedBox(height: height * .02,),
+          Padding(padding: EdgeInsets.only(left: 10, bottom: 10),child: Text("All about Bitcoins",style: TextStyle(fontFamily: "bold",fontSize: 15),),),
+          SizedBox(
+            height: height * 0.9,
+            width: width,
+            child: FutureBuilder<Bitcoin>(
+              future: ApiServices.fetch_api_bitcoim(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: SpinKitCircle(color: Colors.blue));
+                } else {
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data!.articles!.length,
+                    itemBuilder: (context, index) {
+
+                      final formate = DateFormat("dd.MM.yy");
+                      return InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> Bitcoindetail(image:
+                          snapshot.data!.articles![index].urlToImage.toString(),
+                            discription: snapshot.data!.articles![index].description!,
+                            source: snapshot.data!.articles![index].source!.name!,
+                            author: snapshot.data!.articles![index].author ?? "unknown",
+                            title: snapshot.data!.articles![index].title!,
+                            published: formate.format( DateTime.parse(
+                              snapshot.data!.articles![index].publishedAt.toString(),
+                            )),
+                            content: snapshot.data!.articles![index].content!,)));
+                        },
+                     child: Card(
+                       elevation: 5,
+                       shape: RoundedRectangleBorder(
+                         borderRadius: BorderRadius.circular(20),
+                       ),
+                       color: Colors.white,
+                       shadowColor: Colors.black,
+                       child: Container(
+                         height: height*.12,
+                         width: width,
+                         child: Padding(padding: EdgeInsets.symmetric(horizontal: 15,vertical: 15),child:
+                         Text(snapshot.data!.articles![index].title!,style: TextStyle(fontSize: 15,fontFamily: "bold"),),
+                           ),
+                       ),
+                     ),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+
         ],
       ),
     );

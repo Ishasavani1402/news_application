@@ -1,32 +1,29 @@
-// ignore_for_file: must_be_immutable, camel_case_types, use_key_in_widget_constructors
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class detaildscreen extends StatefulWidget {
-  String imgsource;
-  String title;
-  String source;
-  String datetime;
+class detaildtopheadlines extends StatefulWidget{
+
+  String image;
   String discription;
-  String content;
+  String source;
   String author;
+  String title;
+  String published;
+  String content;
 
-  detaildscreen({
-    required this.imgsource,
-    required this.title,
-    required this.source,
-    required this.datetime,
+  detaildtopheadlines({required this.image,
     required this.discription,
-    required this.content,
+    required this.source,
     required this.author,
-  });
+    required this.title,
+    required this.published,
+    required this.content});
   @override
-  State<StatefulWidget> createState() => _detaildscreenState();
+  State<StatefulWidget> createState() => _detaildtopheadlinesstate();
 }
+class _detaildtopheadlinesstate extends State<detaildtopheadlines>{
 
-class _detaildscreenState extends State<detaildscreen> {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.sizeOf(context).height * 1;
@@ -35,7 +32,7 @@ class _detaildscreenState extends State<detaildscreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "DetailedNews",
+          "DetailedHeadlines",
           style: TextStyle(fontFamily: "black", fontSize: 20),
         ),
       ),
@@ -54,19 +51,19 @@ class _detaildscreenState extends State<detaildscreen> {
                 fit: BoxFit.cover,
                 placeholder:
                     (context, url) => Center(
-                      child: Center(
-                        child: SpinKitChasingDots(color: Colors.black),
-                      ),
-                    ),
+                  child: Center(
+                    child: SpinKitChasingDots(color: Colors.black),
+                  ),
+                ),
                 errorWidget: (context, url, error) => Icon(Icons.error),
-                imageUrl: widget.imgsource,
+                imageUrl: widget.image,
               ),
             ),
             SizedBox(height: height*.04,),
             RichText(text: TextSpan(children: [
               TextSpan(text: "AUthor name : ", style: TextStyle(fontSize: 20, fontFamily: "bold",color: Colors.black)),
               TextSpan(text: widget.author, style: TextStyle(fontSize: 20, fontFamily: "regular",color: Colors.black)),
-            
+
             ]
             )),
             SizedBox(height: height * .04),
@@ -107,7 +104,7 @@ class _detaildscreenState extends State<detaildscreen> {
                 Expanded(
                   child: RichText(text: TextSpan(children: [
                     TextSpan(text: "Published at : ", style: TextStyle(fontSize: 18, fontFamily: "regular",color: Colors.black)),
-                    TextSpan(text: widget.datetime, style: TextStyle(fontSize: 15, fontFamily: "bold",color: Colors.black)),
+                    TextSpan(text: widget.published, style: TextStyle(fontSize: 15, fontFamily: "bold",color: Colors.black)),
                   ]
                   )),
                 ),
