@@ -1,16 +1,22 @@
 # news_application
 
-A new Flutter project.
+-> this is news application using flutter.
+-> in this application get real time and current news.
+-> in this application use news api for fetch current news details (https://newsapi.org/).
 
-## Getting Started
+# Tech Stack
 
-This project is a starting point for a Flutter application.
+✔ flutter<br>
+✔ dart<br>
 
-A few resources to get you started if this is your first Flutter project:
+# Screenshots
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![homepage](https://github.com/user-attachments/assets/8f57187d-e490-4e80-994f-2ee84039353f)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![detaiheadline](https://github.com/user-attachments/assets/b806d9b7-4582-4817-a570-ff118d323cc7)
+
+![bitcoindetail](https://github.com/user-attachments/assets/f9976306-d30f-4d08-8cde-eb09f043f6c5)
+
+![category](https://github.com/user-attachments/assets/2b2196ae-1fc1-47f0-ae76-d56908cee907)
+
+![detailnews](https://github.com/user-attachments/assets/611bbe33-ad95-454e-bf2b-b52b32b39a9a)
