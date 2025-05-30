@@ -66,7 +66,6 @@ class _detaildscreenState extends State<detaildscreen> {
             RichText(text: TextSpan(children: [
               TextSpan(text: "AUthor name : ", style: TextStyle(fontSize: 20, fontFamily: "bold",color: Colors.black)),
               TextSpan(text: widget.author, style: TextStyle(fontSize: 20, fontFamily: "regular",color: Colors.black)),
-            
             ]
             )),
             SizedBox(height: height * .04),
