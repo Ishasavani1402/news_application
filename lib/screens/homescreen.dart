@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:news_application/models/Bitcoinmodel.dart';
-import 'package:news_application/models/categorymodel.dart';
+// import 'package:news_application/models/categorymodel.dart';
 import 'package:news_application/models/news_headlines.dart';
-import 'package:news_application/screens/Bitcoindetail.dart';
 import 'package:news_application/screens/categoriesScreen.dart';
-import 'package:news_application/screens/detaildtopheadlines.dart';
+// import 'package:news_application/screens/detaildtopheadlines.dart';
 import 'package:news_application/services/api_services.dart';
+import 'package:news_application/widgets/detailed.dart';
 
 class Homescreen extends StatefulWidget {
   @override
@@ -75,7 +75,7 @@ class _HomescreenState extends State<Homescreen> {
                       final formate = DateFormat("dd.MM.yy");
                       return InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> detaildtopheadlines(image:
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> detailed(image:
                               snapshot.data!.articles![index].urlToImage.toString(),
                               discription: snapshot.data!.articles![index].description!,
                               source: snapshot.data!.articles![index].source!.name!,
@@ -213,7 +213,7 @@ class _HomescreenState extends State<Homescreen> {
                       final formate = DateFormat("dd.MM.yy");
                       return InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> Bitcoindetail(image:
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> detailed(image:
                           snapshot.data!.articles![index].urlToImage.toString(),
                             discription: snapshot.data!.articles![index].description!,
                             source: snapshot.data!.articles![index].source!.name!,
@@ -231,7 +231,7 @@ class _HomescreenState extends State<Homescreen> {
                        ),
                        color: Colors.white,
                        shadowColor: Colors.black,
-                       child: Container(
+                       child: SizedBox(
                          height: height*.12,
                          width: width,
                          child: Padding(padding: EdgeInsets.symmetric(horizontal: 15,vertical: 15),child:

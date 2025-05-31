@@ -6,8 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:news_application/models/categorymodel.dart';
 import 'package:news_application/services/api_services.dart';
-
-import 'detaildscreen.dart';
+import 'package:news_application/widgets/detailed.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
@@ -111,8 +110,8 @@ class _CategoriesState extends State<CategoriesScreen> {
                             context,
                             MaterialPageRoute(
                               builder:
-                                  (context) => detaildscreen(
-                                    imgsource:
+                                  (context) => detailed(
+                                    image:
                                         snapshot
                                             .data!
                                             .articles![index]
@@ -128,7 +127,7 @@ class _CategoriesState extends State<CategoriesScreen> {
                                             .source!
                                             .name
                                             .toString(),
-                                    datetime:
+                                    published:
                                     formate.format( DateTime.parse(
                                       snapshot.data!.articles![index].publishedAt.toString(),
                                     )),

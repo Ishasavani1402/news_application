@@ -1,9 +1,10 @@
+// ignore_for_file: must_be_immutable, camel_case_types, use_key_in_widget_constructors
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class detaildtopheadlines extends StatefulWidget{
-
+class detailed extends StatefulWidget{
   String image;
   String discription;
   String source;
@@ -12,29 +13,31 @@ class detaildtopheadlines extends StatefulWidget{
   String published;
   String content;
 
-  detaildtopheadlines({required this.image,
+  detailed({
+    required this.image,
     required this.discription,
     required this.source,
     required this.author,
     required this.title,
     required this.published,
-    required this.content});
+    required this.content
+});
   @override
-  State<StatefulWidget> createState() => _detaildtopheadlinesstate();
+  State<StatefulWidget> createState() => _detailedState();
 }
-class _detaildtopheadlinesstate extends State<detaildtopheadlines>{
-
+class _detailedState extends State<detailed>{
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.sizeOf(context).height * 1;
-    var width = MediaQuery.sizeOf(context).width * 1;
+    // var width = MediaQuery.sizeOf(context).width * 1;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "DetailedHeadlines",
+          "News",
           style: TextStyle(fontFamily: "black", fontSize: 20),
         ),
+
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
