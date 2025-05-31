@@ -12,7 +12,7 @@ class detailed extends StatefulWidget{
   String title;
   String published;
   String content;
-
+  // @JLGVcSxU7W@Hjj
   detailed({
     required this.image,
     required this.discription,
