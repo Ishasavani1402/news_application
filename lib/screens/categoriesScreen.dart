@@ -3,6 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:news_application/models/categorymodel.dart';
 import 'package:news_application/services/api_services.dart';
@@ -24,6 +25,7 @@ List<String> categories = [
 
 class _CategoriesState extends State<CategoriesScreen> {
   String categoryname = "General";
+
   Future<CategoryModel> fetchdata() async {
     final response = await ApiServices.fetch_api_category(categoryname);
     return response;
@@ -31,27 +33,40 @@ class _CategoriesState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.sizeOf(context).height * 1;
-    var width = MediaQuery.sizeOf(context).width * 1;
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+
     return Scaffold(
+      backgroundColor: Colors.white, // Light grey background
       appBar: AppBar(
-        title: Text("Categories",style: TextStyle(fontFamily: "black",fontSize: 20),
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
+        title: Text(
+          "Category Screen",
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.red.shade500,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 1,
       ),
       body: Column(
         children: [
+          // --- Category Tabs Section ---
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: SizedBox(
-              height: 50,
-              width: MediaQuery.of(context).size.width,
+              height: 40,
               child: ListView.builder(
                 itemCount: categories.length,
                 scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
                     child: InkWell(
                       onTap: () {
                         setState(() {
@@ -59,27 +74,29 @@ class _CategoriesState extends State<CategoriesScreen> {
                         });
                       },
                       child: Container(
-                        height: 50,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
-                          color:
-                              categoryname == categories[index]
-                                  ? Colors.grey
-                                  : Colors.black,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                            // vertical: 10,
+                          color: categoryname == categories[index]
+                              ? Colors.red.shade500 // Active tab color
+                              : Colors.grey.shade200, // Inactive tab color
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: categoryname == categories[index]
+                                ? Colors.red.shade500
+                                : Colors.transparent,
+                            width: 1.5,
                           ),
-                          child: Center(
-                            child: Text(
-                              categories[index].toString(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: "bold",
-                                fontSize: 13,
-                              ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            categories[index].toString(),
+                            style: GoogleFonts.poppins(
+                              color: categoryname == categories[index]
+                                  ? Colors.white
+                                  : Colors.black87,
+                              fontWeight: categoryname == categories[index]
+                                  ? FontWeight.bold
+                                  : FontWeight.w500,
                             ),
                           ),
                         ),
@@ -90,138 +107,135 @@ class _CategoriesState extends State<CategoriesScreen> {
               ),
             ),
           ),
+          // --- News List Section ---
           Expanded(
             child: FutureBuilder<CategoryModel>(
-              future: ApiServices.fetch_api_category(categoryname),
+              future: fetchdata(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: SpinKitCircle(color: Colors.blue));
+                  return const Center(child: SpinKitFadingCircle(color: Colors.red, size: 50));
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                } else if (!snapshot.hasData || snapshot.data!.articles == null || snapshot.data!.articles!.isEmpty) {
+                  return const Center(child: Text("No news available for this category."));
                 } else {
                   return ListView.builder(
                     itemCount: snapshot.data!.articles!.length,
                     itemBuilder: (context, index) {
-                      DateTime now = DateTime.parse(
-                        snapshot.data!.articles![index].publishedAt.toString(),
+                      final article = snapshot.data!.articles![index];
+                      final formattedDate = DateFormat("dd.MM.yy").format(
+                        DateTime.parse(article.publishedAt.toString()),
                       );
-                      final formate = DateFormat("dd.MM.yy");
+
+                      // Check for null values to prevent errors
+                      if (article.title == null || article.description == null) {
+                        return const SizedBox.shrink(); // Hide the item if essential data is missing
+                      }
+
                       return InkWell(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder:
-                                  (context) => detailed(
-                                    image:
-                                        snapshot
-                                            .data!
-                                            .articles![index]
-                                            .urlToImage!
-                                            .toString(),
-                                    title:
-                                        snapshot.data!.articles![index].title
-                                            .toString(),
-                                    source:
-                                        snapshot
-                                            .data!
-                                            .articles![index]
-                                            .source!
-                                            .name
-                                            .toString(),
-                                    published:
-                                    formate.format( DateTime.parse(
-                                      snapshot.data!.articles![index].publishedAt.toString(),
-                                    )),
-                                    discription:
-                                        snapshot
-                                            .data!
-                                            .articles![index]
-                                            .description!,
-                                    content:
-                                        snapshot
-                                            .data!
-                                            .articles![index]
-                                            .content!,
-                                    author:
-                                        snapshot.data!.articles![index].author ?? "unknown",
-                                  ),
+                              builder: (context) => detailed(
+                                image: article.urlToImage ?? '',
+                                title: article.title!,
+                                source: article.source?.name ?? 'Unknown Source',
+                                published: formattedDate,
+                                discription: article.description!,
+                                content: article.content ?? 'No content available.',
+                                author: article.author ?? "Unknown Author",
+                              ),
                             ),
                           );
                         },
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 10,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: CachedNetworkImage(
-                                  height: height * .15,
-                                  width: width * .22,
-                                  imageUrl:
-                                      snapshot.data!.articles![index].urlToImage
-                                          .toString(),
-                                  fit: BoxFit.cover,
-                                  placeholder:
-                                      (context, url) => SizedBox(
-                                        child: SpinKitCircle(
-                                          color: Colors.blue,
-                                        ),
-                                      ),
-                                  errorWidget:
-                                      (context, url, error) =>
-                                          Icon(Icons.error, color: Colors.red),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: width * .03),
-                            SizedBox(
-                              width: width * .6,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    // textAlign: TextAlign.justify,
-                                    snapshot.data!.articles![index].title!,
-                                    style: TextStyle(
-                                      fontFamily: "bold",
-                                      fontSize: 15,
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // News Image
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: CachedNetworkImage(
+                                    height: width * 0.25,
+                                    width: width * 0.25,
+                                    imageUrl: article.urlToImage ?? '',
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) => Container(
+                                      height: width * 0.25,
+                                      width: width * 0.25,
+                                      color: Colors.grey.shade200,
+                                      child: const SpinKitFadingCircle(color: Colors.red, size: 25),
+                                    ),
+                                    errorWidget: (context, url, error) => Container(
+                                      height: width * 0.25,
+                                      width: width * 0.25,
+                                      color: Colors.red.shade50,
+                                      child: const Icon(Icons.image_not_supported, color: Colors.red),
                                     ),
                                   ),
-                                  SizedBox(height: height * .05),
-                                  Row(
+                                ),
+                                SizedBox(width: width * 0.04),
+                                // News Details
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        snapshot
-                                                    .data!
-                                                    .articles![index]
-                                                    .source!
-                                                    .name
-                                                    .toString()
-                                                    .length >
-                                                5
-                                            ? '${snapshot.data!.articles![index].source!.name!.substring(0, 5)}...'
-                                            : snapshot
-                                                .data!
-                                                .articles![index]
-                                                .source!
-                                                .name!,
+                                        article.title!,
+                                        maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: "regular",
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: Colors.black87,
                                         ),
                                       ),
-                                      SizedBox(width: width * .2),
-                                      Text(formate.format(now)),
+                                      SizedBox(height: height * 0.01),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              article.source?.name ?? 'Unknown Source',
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 12,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: width * 0.02),
+                                          Text(
+                                            formattedDate,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       );
                     },

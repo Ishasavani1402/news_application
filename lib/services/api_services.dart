@@ -11,8 +11,10 @@ class ApiServices {
         "https://newsapi.org/v2/top-headlines?sources=${channelName}&apiKey=3a12573dc15a48ca8f2d49a46d251e60";
     final uri = Uri.parse(url);
     final response = await http.get(uri);
-    final json = jsonDecode(response.body);
+    print("Nwes BBC api response : ${response.statusCode} :"
+        "${response.body}");
     if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
       return News_BBC.fromJson(json);
     } else {
       throw Exception('Failed to load data');
@@ -24,6 +26,7 @@ class ApiServices {
         "https://newsapi.org/v2/everything?q=${categoryname}&apiKey=3a12573dc15a48ca8f2d49a46d251e60";
     final uri = Uri.parse(url);
     final response = await http.get(uri);
+    print("Category api response : ${response.statusCode} : ${response.body}");
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
       return CategoryModel.fromJson(json);
@@ -31,6 +34,7 @@ class ApiServices {
       throw Exception('Failed to load data');
     }
   }
+
   static Future<Bitcoin> fetch_api_bitcoim() async {
     var url =
         "https://newsapi.org/v2/everything?q=bitcoin&apiKey=3a12573dc15a48ca8f2d49a46d251e60";
@@ -43,4 +47,5 @@ class ApiServices {
       throw Exception('Failed to load data');
     }
   }
+
 }
